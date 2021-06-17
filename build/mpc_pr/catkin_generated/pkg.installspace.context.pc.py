@@ -4,5 +4,5 @@ PROJECT_PKG_CONFIG_INCLUDE_DIRS = "${prefix}/include".split(';') if "${prefix}/i
 PROJECT_CATKIN_DEPENDS = "geometry_msgs;roscpp;rospy;std_msgs;sensor_msgs".replace(';', ' ')
 PKG_CONFIG_LIBRARIES_WITH_PREFIX = "-lmpc_pr".split(';') if "-lmpc_pr" != "" else []
 PROJECT_NAME = "mpc_pr"
-PROJECT_SPACE_DIR = "/home/robot/planar_robot_ws/install"
+PROJECT_SPACE_DIR = "/home/robot/workspaces/planar_robot/install"
 PROJECT_VERSION = "0.0.0"

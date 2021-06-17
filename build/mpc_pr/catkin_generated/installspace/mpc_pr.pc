@@ -1,4 +1,4 @@
-prefix=/home/robot/planar_robot_ws/install
+prefix=/home/robot/workspaces/planar_robot/install
 
 Name: mpc_pr
 Description: Description of mpc_pr

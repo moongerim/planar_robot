@@ -7,7 +7,7 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/home/robot/planar_robot_ws/devel:$CMAKE_PREFIX_PATH"
-export PWD='/home/robot/planar_robot_ws/build'
-export ROSLISP_PACKAGE_DIRECTORIES="/home/robot/planar_robot_ws/devel/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
-export ROS_PACKAGE_PATH="/home/robot/planar_robot_ws/src:$ROS_PACKAGE_PATH"
+export CMAKE_PREFIX_PATH="/home/robot/workspaces/planar_robot/devel:$CMAKE_PREFIX_PATH"
+export PWD='/home/robot/workspaces/planar_robot/build'
+export ROSLISP_PACKAGE_DIRECTORIES="/home/robot/workspaces/planar_robot/devel/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
+export ROS_PACKAGE_PATH="/home/robot/workspaces/planar_robot/src:$ROS_PACKAGE_PATH"

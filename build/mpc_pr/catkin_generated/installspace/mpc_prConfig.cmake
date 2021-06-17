@@ -67,14 +67,14 @@ set(mpc_pr_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(mpc_pr_SOURCE_PREFIX /home/robot/planar_robot_ws/src/mpc_pr)
-  set(mpc_pr_DEVEL_PREFIX /home/robot/planar_robot_ws/devel)
+  set(mpc_pr_SOURCE_PREFIX /home/robot/workspaces/planar_robot/src/mpc_pr)
+  set(mpc_pr_DEVEL_PREFIX /home/robot/workspaces/planar_robot/devel)
   set(mpc_pr_INSTALL_PREFIX "")
   set(mpc_pr_PREFIX ${mpc_pr_DEVEL_PREFIX})
 else()
   set(mpc_pr_SOURCE_PREFIX "")
   set(mpc_pr_DEVEL_PREFIX "")
-  set(mpc_pr_INSTALL_PREFIX /home/robot/planar_robot_ws/install)
+  set(mpc_pr_INSTALL_PREFIX /home/robot/workspaces/planar_robot/install)
   set(mpc_pr_PREFIX ${mpc_pr_INSTALL_PREFIX})
 endif()
 
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/robot/planar_robot_ws/install/lib;/home/robot/mpc_vrep/devel/lib;/home/robot/catkin_ws/devel/lib;/opt/ros/kinetic/lib)
+    foreach(path /home/robot/workspaces/planar_robot/install/lib;/home/robot/mpc_vrep/devel/lib;/home/robot/catkin_ws/devel/lib;/opt/ros/kinetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

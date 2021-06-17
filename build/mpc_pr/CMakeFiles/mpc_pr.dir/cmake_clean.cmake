@@ -15,8 +15,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/mpc_pr.dir/solver/acado_integrator.c.o"
   "CMakeFiles/mpc_pr.dir/solver/acado_solver.c.o"
   "CMakeFiles/mpc_pr.dir/solver/acado_auxiliary_functions.c.o"
-  "/home/robot/planar_robot_ws/devel/lib/libmpc_pr.pdb"
-  "/home/robot/planar_robot_ws/devel/lib/libmpc_pr.so"
+  "/home/robot/workspaces/planar_robot/devel/lib/libmpc_pr.pdb"
+  "/home/robot/workspaces/planar_robot/devel/lib/libmpc_pr.so"
 )
 
 # Per-language clean rules from dependency scanning.

@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/robot/planar_robot_ws/src
+CMAKE_SOURCE_DIR = /home/robot/workspaces/planar_robot/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/robot/planar_robot_ws/build
+CMAKE_BINARY_DIR = /home/robot/workspaces/planar_robot/build
 
 # Include any dependencies generated for this target.
 include mpc_pr/CMakeFiles/move.dir/depend.make
@@ -58,17 +58,17 @@ include mpc_pr/CMakeFiles/move.dir/progress.make
 include mpc_pr/CMakeFiles/move.dir/flags.make
 
 mpc_pr/CMakeFiles/move.dir/src/move.cc.o: mpc_pr/CMakeFiles/move.dir/flags.make
-mpc_pr/CMakeFiles/move.dir/src/move.cc.o: /home/robot/planar_robot_ws/src/mpc_pr/src/move.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/robot/planar_robot_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object mpc_pr/CMakeFiles/move.dir/src/move.cc.o"
-	cd /home/robot/planar_robot_ws/build/mpc_pr && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/move.dir/src/move.cc.o -c /home/robot/planar_robot_ws/src/mpc_pr/src/move.cc
+mpc_pr/CMakeFiles/move.dir/src/move.cc.o: /home/robot/workspaces/planar_robot/src/mpc_pr/src/move.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/robot/workspaces/planar_robot/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object mpc_pr/CMakeFiles/move.dir/src/move.cc.o"
+	cd /home/robot/workspaces/planar_robot/build/mpc_pr && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/move.dir/src/move.cc.o -c /home/robot/workspaces/planar_robot/src/mpc_pr/src/move.cc
 
 mpc_pr/CMakeFiles/move.dir/src/move.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/move.dir/src/move.cc.i"
-	cd /home/robot/planar_robot_ws/build/mpc_pr && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/robot/planar_robot_ws/src/mpc_pr/src/move.cc > CMakeFiles/move.dir/src/move.cc.i
+	cd /home/robot/workspaces/planar_robot/build/mpc_pr && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/robot/workspaces/planar_robot/src/mpc_pr/src/move.cc > CMakeFiles/move.dir/src/move.cc.i
 
 mpc_pr/CMakeFiles/move.dir/src/move.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/move.dir/src/move.cc.s"
-	cd /home/robot/planar_robot_ws/build/mpc_pr && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/robot/planar_robot_ws/src/mpc_pr/src/move.cc -o CMakeFiles/move.dir/src/move.cc.s
+	cd /home/robot/workspaces/planar_robot/build/mpc_pr && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/robot/workspaces/planar_robot/src/mpc_pr/src/move.cc -o CMakeFiles/move.dir/src/move.cc.s
 
 mpc_pr/CMakeFiles/move.dir/src/move.cc.o.requires:
 
@@ -88,53 +88,53 @@ move_OBJECTS = \
 # External object files for target move
 move_EXTERNAL_OBJECTS =
 
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: mpc_pr/CMakeFiles/move.dir/src/move.cc.o
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: mpc_pr/CMakeFiles/move.dir/build.make
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/libroscpp.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_signals.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/librosconsole.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/librosconsole_log4cxx.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/librosconsole_backend_interface.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/liblog4cxx.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_regex.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/libxmlrpcpp.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/libroscpp_serialization.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/librostime.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/libcpp_common.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_system.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_thread.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_chrono.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_date_time.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_atomic.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libpthread.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /home/robot/planar_robot_ws/devel/lib/libmpc_pr.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/libroscpp.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_signals.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/librosconsole.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/librosconsole_log4cxx.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/librosconsole_backend_interface.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/liblog4cxx.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_regex.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/libxmlrpcpp.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/libroscpp_serialization.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/librostime.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/libcpp_common.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_system.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_thread.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_chrono.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_date_time.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_atomic.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libpthread.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
-/home/robot/planar_robot_ws/devel/lib/mpc_pr/move: mpc_pr/CMakeFiles/move.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/robot/planar_robot_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable /home/robot/planar_robot_ws/devel/lib/mpc_pr/move"
-	cd /home/robot/planar_robot_ws/build/mpc_pr && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/move.dir/link.txt --verbose=$(VERBOSE)
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: mpc_pr/CMakeFiles/move.dir/src/move.cc.o
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: mpc_pr/CMakeFiles/move.dir/build.make
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/libroscpp.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_signals.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/librosconsole.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/librosconsole_log4cxx.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/librosconsole_backend_interface.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/liblog4cxx.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_regex.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/libxmlrpcpp.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/libroscpp_serialization.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/librostime.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/libcpp_common.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_system.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_thread.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_chrono.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_date_time.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_atomic.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libpthread.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /home/robot/workspaces/planar_robot/devel/lib/libmpc_pr.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/libroscpp.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_signals.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/librosconsole.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/librosconsole_log4cxx.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/librosconsole_backend_interface.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/liblog4cxx.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_regex.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/libxmlrpcpp.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/libroscpp_serialization.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/librostime.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /opt/ros/kinetic/lib/libcpp_common.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_system.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_thread.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_chrono.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_date_time.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libboost_atomic.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libpthread.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
+/home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move: mpc_pr/CMakeFiles/move.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/robot/workspaces/planar_robot/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable /home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move"
+	cd /home/robot/workspaces/planar_robot/build/mpc_pr && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/move.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-mpc_pr/CMakeFiles/move.dir/build: /home/robot/planar_robot_ws/devel/lib/mpc_pr/move
+mpc_pr/CMakeFiles/move.dir/build: /home/robot/workspaces/planar_robot/devel/lib/mpc_pr/move
 
 .PHONY : mpc_pr/CMakeFiles/move.dir/build
 
@@ -143,10 +143,10 @@ mpc_pr/CMakeFiles/move.dir/requires: mpc_pr/CMakeFiles/move.dir/src/move.cc.o.re
 .PHONY : mpc_pr/CMakeFiles/move.dir/requires
 
 mpc_pr/CMakeFiles/move.dir/clean:
-	cd /home/robot/planar_robot_ws/build/mpc_pr && $(CMAKE_COMMAND) -P CMakeFiles/move.dir/cmake_clean.cmake
+	cd /home/robot/workspaces/planar_robot/build/mpc_pr && $(CMAKE_COMMAND) -P CMakeFiles/move.dir/cmake_clean.cmake
 .PHONY : mpc_pr/CMakeFiles/move.dir/clean
 
 mpc_pr/CMakeFiles/move.dir/depend:
-	cd /home/robot/planar_robot_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/robot/planar_robot_ws/src /home/robot/planar_robot_ws/src/mpc_pr /home/robot/planar_robot_ws/build /home/robot/planar_robot_ws/build/mpc_pr /home/robot/planar_robot_ws/build/mpc_pr/CMakeFiles/move.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/robot/workspaces/planar_robot/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/robot/workspaces/planar_robot/src /home/robot/workspaces/planar_robot/src/mpc_pr /home/robot/workspaces/planar_robot/build /home/robot/workspaces/planar_robot/build/mpc_pr /home/robot/workspaces/planar_robot/build/mpc_pr/CMakeFiles/move.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : mpc_pr/CMakeFiles/move.dir/depend
 
