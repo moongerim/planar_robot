@@ -39,74 +39,56 @@ MPC_solver::MPC_solver(int n): num_steps(n) {
 };
 
 double * MPC_solver::solve_mpc(double input_arr[4]) {
-	/* input_arr parsing:
-	0-2: current theta
-	2-4: goal theta
+	// input_arr parsing: 0-2: current theta, 2-4: goal theta
 
-	output j_dot[2]
-	*/
 	double x0[] = {input_arr[0], input_arr[1]};
 	double yN[] = {input_arr[2], input_arr[3]};
 	
-	printf("current: %.3f, %.3f\n", x0[0], x0[1]);
-	printf("goal: %.3f, %.3f\n", yN[0], yN[1]);
+	printf("current: %f, %f\n", x0[0], x0[1]);
+	printf("goal: %f, %f\n", yN[0], yN[1]);
 
 	/* Some temporary variables. */
 	int    i, j, iter;
 	acado_timer t;
 	
 	for (i = 0; i < N; i++) 
-	{ // extrapolate
+	{
 		acadoVariables.y[i*NY] = yN[0];
 		acadoVariables.y[i*NY+1] = yN[1];
-		// printf("y %i =  %f, %f\n ", i, acadoVariables.y[i*NY], acadoVariables.y[i*NY+1]);
-		// count_step++;
     }
     // terminal goal
-	for (i = 0; i < NYN; ++i){
-		acadoVariables.yN[i] = yN[i];
-	}  	
-	/* MPC: initialize the current state feedback. */
-    // #if ACADO_INITIAL_STATE_FIXED
+	for (i = 0; i < NYN; ++i) acadoVariables.yN[i] = yN[i];
 	for (i = 0; i < 2; ++i) acadoVariables.x0[i] = x0[i];
-    // #endif
-
-	// for (i = 0; i < NU * N; ++i)  acadoVariables.u[i] = 0.0;
 
 	acado_tic( &t );
 	for(iter = 0; iter < num_steps; ++iter)
-	    {
+	{
 		/* Prepare for the RTI step. */
 		acado_preparationStep();
 		/* Compute the feedback step. */
 		acado_feedbackStep( );
-	    }
+	}
 	real_t te = acado_toc( &t );
 	real_t KKT_val = acado_getKKT();
 
 	ROS_INFO("Time: %.3g ms; KKT = %.3e", 1e3 * te, KKT_val);
 
-	static double joint_commands[5];
-    joint_commands[4] = 0;  // infisibility marker
-    for (i = 0; i < 2; ++i) {
-	    joint_commands[i] = acadoVariables.u[i];
-	}
+	static double joint_commands[4];
+    for (i = 0; i < 2; ++i) joint_commands[i] = acadoVariables.u[i];
 	joint_commands[2] = 1e3 * te;
 	joint_commands[3] = KKT_val;
 
-	if (KKT_val > 0.01) {
-		acado_initializeSolver();
+	// if (KKT_val > 0.01) {
+	// 	acado_initializeSolver();
+	// 	/* Initialize the states and controls. */
+	// 	for (i = 0; i < NX * (N + 1); ++i)  acadoVariables.x[i] = 0.0;
+	// 	for (i = 0; i < NU * N; ++i)  acadoVariables.u[i] = 0.0;
 
-		/* Initialize the states and controls. */
-		for (i = 0; i < NX * (N + 1); ++i)  acadoVariables.x[i] = 0.0;
-		for (i = 0; i < NU * N; ++i)  acadoVariables.u[i] = 0.0;
-
-		/* Initialize the measurements/reference. */
-		for (i = 0; i < NY * N; ++i)  acadoVariables.y[i] = 0.0;
-	} else {
-		acado_shiftStates(2, 0, 0);
-		acado_shiftControls( 0 );
-	}
-	
+	// 	/* Initialize the measurements/reference. */
+	// 	for (i = 0; i < NY * N; ++i)  acadoVariables.y[i] = 0.0;
+	// } else {
+		// acado_shiftStates(2, 0, 0);
+		// acado_shiftControls( 0 );
+	// }
 	return joint_commands;
 }
