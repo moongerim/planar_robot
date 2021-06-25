@@ -1,21 +1,24 @@
 clear all;
 clc;
 close all
-cd '/home/robot/workspaces/planar_robot/src/mpc_pr/log_reward/pr_script_20210622_115923/';
-load('4.mat');
-% q = data(:,1:2);
+cd '/home/robot/workspaces/planar_robot/data'
+% src/mpc_pr/log_reward/pr_script_20210622_115923/';
+data= load('data_22.csv');
+q = data(:,1:2);
+init = data(:,3:4);
+
 % q_goal = data(:,3:4);
-% q_dot = data(:,5:6);
-% min_dist = data(:,7:10);
-% solutions = data(:,11:14);
+q_dot = data(:,6:7);
+min_dist = data(:,8:15);
+solutions = data(:,16:17);
 % smallest_distance  = data(:,15);
 % wall_dist = data(:,16:17);
 
-len=length(init_q)
+len=length(q_dot);
 for i=1:len
-    q_goal(i,:)=[3.14, 0]
+    q_goal(i,:)=[3.14, 0];
 end
-dt=0.1
+dt=0.1;
 figure1 = figure('Name', 'positions')
 subplot(2,1,1);
 grid on;
@@ -47,8 +50,8 @@ figure2 = figure('Name', 'velocities')
 subplot(2,1,1);
 grid on;
 hold on;
-plot(real_q_dot(:,1));
-plot(MPC_sol(:,1));
+plot(q_dot(:,1));
+plot(solutions(:,1));
 set(gca,'XTick',0:100:100*len);
 set(gca,'XTickLabel',0:dt*100:len*100*dt);
 
@@ -56,8 +59,8 @@ title("q 1 dot")
 subplot(2,1,2);
 grid on;
 hold on;
-l1 = plot(real_q_dot(:,2));
-l2 = plot(MPC_sol(:,2));
+l1 = plot(q_dot(:,2));
+l2 = plot(solutions(:,2));
 set(gca,'XTick',0:100:100*len);
 set(gca,'XTickLabel',0:dt*100:len*100*dt);
 

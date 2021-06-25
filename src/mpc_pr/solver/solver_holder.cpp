@@ -38,6 +38,20 @@ MPC_solver::MPC_solver(int n): num_steps(n) {
 	for (i = 0; i < NY * N; ++i)  acadoVariables.y[i] = 0.0;
 };
 
+int MPC_solver::reinitialize(){
+	int i;
+	/* Initialize the solver. */
+	acado_initializeSolver();
+
+	/* Initialize the states and controls. */
+	for (i = 0; i < NX * (N + 1); ++i)  acadoVariables.x[ i ] = 0.0;
+	for (i = 0; i < NU * N; ++i)  acadoVariables.u[ i ] = 0.0;
+
+	/* Initialize the measurements/reference. */
+	for (i = 0; i < NY * N; ++i)  acadoVariables.y[ i ] = 0.0;
+	return 0;
+};
+
 double * MPC_solver::solve_mpc(double input_arr[4]) {
 	// input_arr parsing: 0-2: current theta, 2-4: goal theta
 

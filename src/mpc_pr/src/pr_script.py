@@ -14,6 +14,7 @@ import math
 from utils import experiment_name, write_mat
 
 run_name = experiment_name()
+
 def fRand(fMin, fMax):
     f = random.uniform(fMin, fMax)
     return f
@@ -67,20 +68,21 @@ class MyRobot(Arm):
 
 class MPC:
     def __init__(self, run_name):
-        self.scene = '/home/robot/workspaces/planar_robot/scenes/toy_example4.ttt'
+        self.scene = '/home/robot/workspaces/planar_robot/scenes/toy_example5.ttt'
         self.states_pub = rospy.Publisher('/pr/joint_states', Float64MultiArray, queue_size=1)
         self.observation = Float64MultiArray()
-        self.joint_goals = Float64MultiArray()
         self.first_reset = 0
+        # self.first_init = 1.0
         self.episodes = 0
         self.run_name = run_name
         self.obs = [0,0,0,0]
         self.u = [0,0]
         self.init_ee = [0,0]
+        self.joint_goals = [3.14, 0.0]
         self._start()
 
     def _start(self):
-        print("_start")
+        # print("_start")
         self.env = PyRep()
         self.env.launch(self.scene, headless = False)
         self.env.start()
@@ -89,25 +91,48 @@ class MPC:
         self.joint2 = Joint('PR_joint2')
         self.init_ee_shape = Shape('initial_ee')
         self._init_variables()
-        # print("The robot is launched")
+        print("The robot is launched")
 
     def _step(self,u):
-        # print("_step")
-        self.u = u
-        self.send_actions(u)
+        self.u=u
+        self.joint1.set_joint_target_velocity(u[0])
+        self.joint2.set_joint_target_velocity(u[1])
+        # self.u = u
+        # print("step", u)
+        
+        # self._self_observe()
+        # self.first_reset = 0
+        
+        # if abs(self.obs[0])>6.29 or abs(self.obs[1])>1.59:# or config_space(self.obs[0],self.obs[1])==0:
+        #     self.destroy()
+        # max_diff = 0
+        # for i in range(2):
+        #     temp=abs(self.joint_goals[i]-self.obs[i])
+        #     if temp>max_diff:
+        #         max_diff = temp
+        # if max_diff<0.05:
+        #     print("arrived")
+        #     self._reset()
+        # self.send_actions(u)
         self.env.step() #step the physics simulation
         self._self_observe()
-        self.first_reset = 0
-        self.log_variables(self.init_jp, self.obs[0:2], self.u[0:2], self.obs[2:4])
+            
+        # self.log_variables(self.init_jp, self.obs[0:2], self.u[0:2], self.obs[2:4])
 
     def _self_observe(self):
-        # print("_self_observe")
-        self.obs = [self.joint1.get_joint_position(), self.joint2.get_joint_position(), self.joint1.get_joint_velocity(),self.joint2.get_joint_velocity()]
-        self.observation.data = self.obs
+        obs = [self.joint1.get_joint_position(), self.joint2.get_joint_position(), self.joint1.get_joint_velocity(),self.joint2.get_joint_velocity()]
+
+        self.observation.data=obs
         self.states_pub.publish(self.observation)
+        
     
+    def destroy(self):
+        self.env.stop()
+        self._init_variables()
+        self.env.start()
+        self._self_observe()
+
     def _reset(self):
-        # print("reset")
         if self.first_reset == 0:
             self.env.stop()
             write_mat('../log_reward/' + self.run_name,
@@ -117,9 +142,7 @@ class MPC:
                        'real_q_dot': self.q_dot},
                       str(self.episodes))
             self._init_variables()
-            # print("stop")
             self.env.start()
-            # print("start")
             self._self_observe()
             self.first_reset = 1
             self.episodes += 1
@@ -129,15 +152,16 @@ class MPC:
         self.init_log_variables()
         self.flag=0
         self.init_jp=[0,0]
-        while (self.flag==0):
-            self.init_jp[0] = fRand(-3.14, 3.14)
-            self.init_jp[1] = fRand(-1.57, 1.57)
-            self.flag = config_space(self.init_jp[0],self.init_jp[1])
-        print("New initial joint positions ", self.init_jp[0],self.init_jp[1])
+        # while (self.flag==0):
+        #     self.init_jp[0] = fRand(-3.14, 3.14)
+        #     self.init_jp[1] = fRand(-1.57, 1.57)
+        #     self.flag = config_space(self.init_jp[0],self.init_jp[1])
+        # print("New initial joint positions ", self.init_jp[0],self.init_jp[1])
         self.joint1.set_joint_position(self.init_jp[0])
         self.joint2.set_joint_position(self.init_jp[1])
         self.init_ee = PR_ee(self.init_jp[0],self.init_jp[1]) 
         self.init_ee_shape.set_position(self.init_ee)
+        # self.first_init = 1.0
         self.flag=0
 
     def init_log_variables(self):
@@ -154,34 +178,35 @@ class MPC:
         self.MPC_sol = np.vstack([self.MPC_sol, u])
         self.q_dot = np.vstack([self.q_dot, obs_2])
 
-    def send_actions(self,u):
-        # print("send_actions")
-        self.joint1.set_joint_target_velocity(u[0])
-        self.joint2.set_joint_target_velocity(u[1])
+    # def send_actions(self,u):
+    #     print("send_actions", u)
+    #     self.joint1.set_joint_target_velocity(u[0])
+    #     self.joint2.set_joint_target_velocity(u[1])
+        # self.env.step()
  
-env = MPC(run_name)
+
 velocity = [0,0]
+env = MPC(run_name)
 
 def talker(data):
     global velocity
-    velocity = data.data[0:2]
-
-def state_talker(data):
-    global velocity, env
-    # print("state talker", data.data)
-    if data.data==1:
-        env._step(velocity)
-        # print("not arrived yet", velocity)
-    else:
-        # print("arrived")
-        env._reset()
+    print(data.data)
+    velocity = [0,0]
+    # env._self_observe()
+    env._step(velocity)
     
+    # env.send_actions(velocity)
+    
+        
 def main():
-    global velocity
-    global flag
-    rospy.init_node("test_move", anonymous=True)
-    rospy.Subscriber("/MPC_solutions", Float64MultiArray, talker)
-    rospy.Subscriber("/state_flag", Float64, state_talker)
-    rospy.spin()
+    global get_joint_velocity, env
+    try:
+        rospy.init_node("test_move", anonymous=True)
+        # env._reset()
+        rospy.Subscriber("/MPC_solutions", Float64MultiArray, talker)
+        rospy.spin()
+    except KeyboardInterrupt:
+        rospy.signal_shutdown("KeyboardInterrupt")
+        raise
 
 if __name__ == '__main__': main()
