@@ -7,8 +7,17 @@ import torch.nn.functional as F
 import copy
 import matplotlib.pyplot as plt
 import os
-
+import stream_tee as stream_tee
 torch.manual_seed(1)
+import os
+import stream_tee as stream_tee
+import __main__ as main
+
+def experiment_name():
+    experiment = os.path.splitext(os.path.split(main.__file__)[1])[0]
+    name = experiment + '_' + stream_tee.generate_timestamp()
+    return name
+
 
 class MyModel(nn.Module):
     def __init__(self, dev, input_size = 2, output_size = 2):
@@ -137,8 +146,9 @@ def visualize(predicted_data, real_data):
 
 
 if __name__ == '__main__':
-    log_file1 = 'train_log.txt'
-    log_file2 = 'eval_log.txt'
+    run_name = experiment_name()
+    train_log = 'train_log_{}.txt'.format(run_name)
+    eval_log = 'eval_log_{}.txt'.format(run_name)
     n_files = 377
     n_batch = 10
     # Data loading:
@@ -168,8 +178,8 @@ if __name__ == '__main__':
     lower_loss = 1
 
     for epoch in range(epoches):
-        loss1 = train(epoch, dev, model, x_train, y_train, optimizer, log_interval, loss_function, log_file1)
-        loss2 = evals(model, x_eval, y_eval, dev, loss_function, log_file2)
+        loss1 = train(epoch, dev, model, x_train, y_train, optimizer, log_interval, loss_function, train_log)
+        loss2 = evals(model, x_eval, y_eval, dev, loss_function, eval_log)
         if lower_loss>loss2:
             lower_loss = loss2
             print('\nThe lowest loss is: {:4f}\n '.format(lower_loss))
