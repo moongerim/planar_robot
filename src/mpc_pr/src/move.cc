@@ -127,7 +127,7 @@ int main(int argc, char **argv)
           // init[1] = fRand(-1.57,1.57);
           init[1]=init[1]+0.1;
           answer = config_space(init[0],init[1]);
-          printf("thetas = %f,%f,ans=%f\n",init[0],init[1],answer);
+          // printf("thetas = %f,%f,ans=%f\n",init[0],init[1],answer);
         }
         solutions[0]=init[0];
         solutions[1]=init[1];

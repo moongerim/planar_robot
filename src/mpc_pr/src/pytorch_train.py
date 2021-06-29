@@ -8,16 +8,14 @@ import copy
 import matplotlib.pyplot as plt
 import os
 import stream_tee as stream_tee
-torch.manual_seed(1)
-import os
-import stream_tee as stream_tee
 import __main__ as main
+
+torch.manual_seed(1)
 
 def experiment_name():
     experiment = os.path.splitext(os.path.split(main.__file__)[1])[0]
     name = experiment + '_' + stream_tee.generate_timestamp()
     return name
-
 
 class MyModel(nn.Module):
     def __init__(self, dev, input_size = 2, output_size = 2):
@@ -34,17 +32,14 @@ class MyModel(nn.Module):
 def train(epoch, dev, model, x_train, y_train, optimizer, log_interval, loss_function, log_file):
     runLoss = 0
     model.train()
-
     for b in range(0, len(x_train), n_batch):
         seq_data = np.array(x_train[b:b+n_batch])
         seq_label = np.array(y_train[b:b+n_batch])
         seq_data = torch.tensor([i for i in seq_data], dtype=torch.float32).to(dev)
         seq_label = torch.tensor([i for i in seq_label], dtype=torch.float32).to(dev)
         optimizer.zero_grad()
-
         y_pred = model(seq_data)
         single_loss = loss_function(y_pred, seq_label)
-
         runLoss += single_loss.item()
         single_loss.backward()
         optimizer.step()
@@ -59,7 +54,6 @@ def evals(model, x_eval, y_eval, dev, loss_function, log_file):
     total_loss = 0
     correct = 0
     model.eval()
-
     with torch.no_grad():
         for b in range(0, len(x_eval), n_batch):
             seq_data = np.array(x_eval[b:b+n_batch])
@@ -114,7 +108,6 @@ def visualize(predicted_data, real_data):
     r_data = np.asarray(real_data)
     p_len = len(p_data)
     r_len = len(r_data)
-
     q_1_dot_p = np.zeros(p_len)
     q_2_dot_p = np.zeros(p_len)
     for i in range(p_data):
@@ -129,11 +122,9 @@ def visualize(predicted_data, real_data):
         real = list(real)
         q_1_dot_r[i] = real[0]
         q_2_dot_r[i] = real[1]
-    
     a = 2
     fig, axs = plt.subplots(a,1)   
     time = np.arange(0,p_len,1)
-
     axs[0].plot(time, q_1_dot_p, label = 'predicted')
     axs[0].set_ylabel('q_1_dot')
     axs[0].plot(time, q_1_dot_r, label = 'real')
@@ -143,7 +134,6 @@ def visualize(predicted_data, real_data):
     axs[1].plot(time, q_2_dot_r, label = 'real')
     axs[1].grid(True)
     plt.show()
-
 
 if __name__ == '__main__':
     run_name = experiment_name()
@@ -178,17 +168,22 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     lower_loss = 1
 
-    for epoch in range(epoches):
-        loss1 = train(epoch, dev, model, x_train, y_train, optimizer, log_interval, loss_function, train_log)
-        loss2 = evals(model, x_eval, y_eval, dev, loss_function, eval_log)
-        if lower_loss>loss2:
-            lower_loss = loss2
-            print('\nThe lowest loss is: {:4f}\n '.format(lower_loss))
-            torch.save(model.state_dict(), 'model_{}.pth'.format(run_name))
+    # for epoch in range(epoches):
+    #     loss1 = train(epoch, dev, model, x_train, y_train, optimizer, log_interval, loss_function, train_log)
+    #     loss2 = evals(model, x_eval, y_eval, dev, loss_function, eval_log)
+    #     if lower_loss>loss2:
+    #         lower_loss = loss2
+    #         print('\nThe lowest loss is: {:4f}\n '.format(lower_loss))
+    #         data_dir = '/home/robot/workspaces/planar_robot/weights'
+    #         os.chdir(data_dir)
+    #         torch.save(model.state_dict(), 'model_{}.pth'.format(run_name))
     
     print("\nA testing part")
     model.cuda()
-    model.load_state_dict(torch.load('model_{}.pth'.format(run_name)))  
+    # model.load_state_dict(torch.load('model_{}.pth'.format(run_name)))  
+    os.chdir(data_dir)
+    torch.save(model.state_dict(), 'model_{}.pth'.format(run_name))
+    model.load_state_dict(torch.load('model_pytorch_train_20210629_142823.pth')) 
     predicted_data, real_data = test(model, x_test, y_test)
     visualize(predicted_data, real_data)
 
