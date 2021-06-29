@@ -151,6 +151,7 @@ if __name__ == '__main__':
     eval_log = 'eval_log_{}.txt'.format(run_name)
     n_files = 377
     n_batch = 10
+
     # Data loading:
     data_dir = '/home/robot/workspaces/planar_robot/data/'
     os.chdir(data_dir)
@@ -183,11 +184,11 @@ if __name__ == '__main__':
         if lower_loss>loss2:
             lower_loss = loss2
             print('\nThe lowest loss is: {:4f}\n '.format(lower_loss))
-            torch.save(model.state_dict(), "model2906.pth")
+            torch.save(model.state_dict(), 'model_{}.pth'.format(run_name))
     
     print("\nA testing part")
     model.cuda()
-    model.load_state_dict(torch.load('model2906.pth'))  
+    model.load_state_dict(torch.load('model_{}.pth'.format(run_name)))  
     predicted_data, real_data = test(model, x_test, y_test)
     visualize(predicted_data, real_data)
 

@@ -2,32 +2,23 @@ clear all;
 clc;
 close all
 cd '/home/robot/workspaces/planar_robot/'
-% src/mpc_pr/log_reward/pr_script_20210622_115923/';
 for k=284:377
     filename = sprintf('data_%i.csv',k);
     data = load(filename);
 
     q = data(:,1:2);
     init = data(:,3:4);
-
-    % q_goal = data(:,3:4);
     q_dot = data(:,6:7);
     min_dist = data(:,8:15);
     solutions = data(:,16:17);
-    % smallest_distance  = data(:,15);
-    % wall_dist = data(:,16:17);
 
     len=length(q_dot);
-%     for i=1:len
-%         q_goal(i,:)=[3.14, 0];
-%     end
     dt=0.1;
     figure1 = figure('Name', 'positions');
     subplot(2,1,1);
     grid on;
     hold on;
     plot(q(:,1));
-%     plot(q_goal(:,1));
     set(gca,'XTick',0:100:100*len);
     set(gca,'XTickLabel',0:dt*100:len*100*dt);
 
@@ -36,17 +27,10 @@ for k=284:377
     grid on;
     hold on;
     l1 = plot(q(:,2));
-%     l2 = plot(q_goal(:,2));
     set(gca,'XTick',0:100:100*len);
     set(gca,'XTickLabel',0:dt*100:len*100*dt);
 
     title("q 2")
-    % Construct a Legend with the data from the sub-plots
-%     hL = legend([l1,l2],{"q", "q goal"});
-    % Programatically move the Legend
-%     newPosition = [0.6 0.1 0.1 0.1];
-%     newUnits = 'normalized';
-%     set(hL,'Position', newPosition,'Units', newUnits);
     figurename = sprintf('jp_%i.png',k);
     saveas(figure1, figurename);
 end
