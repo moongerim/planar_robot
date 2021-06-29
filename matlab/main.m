@@ -3,12 +3,9 @@ clc;
 close all
 cd '/home/robot/workspaces/planar_robot/'
 % src/mpc_pr/log_reward/pr_script_20210622_115923/';
-for k=129:157
-    if k ~= 22
-        filename = sprintf('data_%i.csv',k);
-        data = load(filename);
-        len(k) = length(data);
-    end
+for k=284:377
+    filename = sprintf('data_%i.csv',k);
+    data = load(filename);
 
     q = data(:,1:2);
     init = data(:,3:4);
@@ -20,7 +17,7 @@ for k=129:157
     % smallest_distance  = data(:,15);
     % wall_dist = data(:,16:17);
 
-%     len=length(q_dot);
+    len=length(q_dot);
 %     for i=1:len
 %         q_goal(i,:)=[3.14, 0];
 %     end

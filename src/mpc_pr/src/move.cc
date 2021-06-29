@@ -94,16 +94,16 @@ int main(int argc, char **argv)
   ros::NodeHandle n;
   ROS_INFO("Node Started");
   // string filename = "data"
-  myfile.open("data_176.csv", ios::out); 
+  myfile.open("data_378.csv", ios::out); 
   GoalFollower my_follower;
   my_follower.chatter_pub = n.advertise<std_msgs::Float64MultiArray>("/pr/command", 1);
   my_follower.ee_pub = n.advertise<std_msgs::Float64MultiArray>("/reference", 1);
   ros::Subscriber joint_status = n.subscribe("/pr/joint_states", 1, &GoalFollower::change_states_msg, &my_follower);
   ros::Subscriber dist_status = n.subscribe("/CoppeliaSim/distances", 1, &GoalFollower::change_dist_msg, &my_follower);
 
-  double init[2]={0.9,0.0000};
+  double init[2]={1.3,0.0000};
   double answer = 0.0;
-  int fileseq=177;
+  int fileseq=379;
   ros::Rate loop_rate(20);
   while (ros::ok())
   {
