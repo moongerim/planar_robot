@@ -1,8 +1,10 @@
 clear all;
 clc;
 close all
-cd '/home/robot/workspaces/planar_robot/'
-for k=284:377
+cd '/home/robot/workspaces/planar_robot/_LOGS' 
+loss = load('train_log_pytorch_train_20210630_151454.csv')
+
+for k=1:67
     filename = sprintf('data_%i.csv',k);
     data = load(filename);
 
@@ -11,28 +13,29 @@ for k=284:377
     q_dot = data(:,6:7);
     min_dist = data(:,8:15);
     solutions = data(:,16:17);
-
-    len=length(q_dot);
-    dt=0.1;
-    figure1 = figure('Name', 'positions');
-    subplot(2,1,1);
-    grid on;
-    hold on;
-    plot(q(:,1));
-    set(gca,'XTick',0:100:100*len);
-    set(gca,'XTickLabel',0:dt*100:len*100*dt);
-
-    title("q 1");
-    subplot(2,1,2);
-    grid on;
-    hold on;
-    l1 = plot(q(:,2));
-    set(gca,'XTick',0:100:100*len);
-    set(gca,'XTickLabel',0:dt*100:len*100*dt);
-
-    title("q 2")
-    figurename = sprintf('jp_%i.png',k);
-    saveas(figure1, figurename);
+    max_vel_1(k) = max(solutions(:,1))
+    max_vel_2(k) = max(solutions(:,2))
+%     len=length(q_dot);
+%     dt=0.1;
+%     figure1 = figure('Name', 'positions');
+%     subplot(2,1,1);
+%     grid on;
+%     hold on;
+%     plot(q(:,1));
+%     set(gca,'XTick',0:100:100*len);
+%     set(gca,'XTickLabel',0:dt*100:len*100*dt);
+% 
+%     title("q 1");
+%     subplot(2,1,2);
+%     grid on;
+%     hold on;
+%     l1 = plot(q(:,2));
+%     set(gca,'XTick',0:100:100*len);
+%     set(gca,'XTickLabel',0:dt*100:len*100*dt);
+% 
+%     title("q 2")
+%     figurename = sprintf('jp_%i.png',k);
+%     saveas(figure1, figurename);
 end
 
 % figure2 = figure('Name', 'velocities')

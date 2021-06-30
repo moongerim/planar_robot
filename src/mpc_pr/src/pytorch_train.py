@@ -1,15 +1,16 @@
-import pandas as pd
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 import copy
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import os
 import stream_tee as stream_tee
 import __main__ as main
-
+import csv
 torch.manual_seed(1)
 
 def experiment_name():
@@ -26,8 +27,9 @@ class MyModel(nn.Module):
 
     def forward(self, x):
         x = self.linear_1(x)
-        x = F.tanh(x)
-        return self.linear_2(x)
+        return x
+        #x = torch.tanh(x)
+        #return self.linear_2(x)
 
 def train(epoch, dev, model, x_train, y_train, optimizer, log_interval, loss_function, log_file):
     runLoss = 0
@@ -45,8 +47,6 @@ def train(epoch, dev, model, x_train, y_train, optimizer, log_interval, loss_fun
         optimizer.step()
         if b % log_interval == 0:
             print ('Train epoch {} [{}/{}] loss: {:.6f}'.format(epoch, b, len(train_data), single_loss.item()))
-            with open('_LOGS/{}'.format(log_file), 'a+') as f:
-                f.write('Train epoch {} [{}/{}] loss: {:.6f}\n'.format(epoch, b, len(train_data), single_loss.item()))
     return runLoss
 
 
@@ -65,14 +65,13 @@ def evals(model, x_eval, y_eval, dev, loss_function, log_file):
             total_loss += single_loss.item()
         total_loss /= len(eval_data)
     print('\nEvaluation Set: Average loss: {:4f}\n'.format(total_loss))
-    with open('_LOGS/{}'.format(log_file), 'a+') as f:
-                f.write('Train epoch {} [{}/{}] loss: {:.6f}\n'.format(epoch, b, len(eval_data), single_loss.item()))
     return total_loss
 
 def test(model, x_test, y_test):
     model.eval()
     predictions=[]
     real_data=[]
+    n_batch = 1
     with torch.no_grad():
         for b in range(0, len(x_test), n_batch):
             seq_data = np.array(x_test[b:b+n_batch])
@@ -103,44 +102,55 @@ def split_data(data):
     test_data = data[train_size+eval_size:]
     return [train_data, eval_data, test_data]
 
-def visualize(predicted_data, real_data):
+def visualize(predicted_data, real_data, logfile, x_test, y_test):
+    data_dir = '/home/robot/workspaces/planar_robot/_LOGS/'
+    os.chdir(data_dir)
     p_data = np.asarray(predicted_data)
     r_data = np.asarray(real_data)
     p_len = len(p_data)
     r_len = len(r_data)
+    q_1_r = np.zeros(p_len)
+    q_2_r = np.zeros(p_len)
     q_1_dot_p = np.zeros(p_len)
     q_2_dot_p = np.zeros(p_len)
-    for i in range(p_data):
-        init = p_data[i]
-        init = list(init.cpu().numpy())
-        q_1_dot_p[i] = init[0]
-        q_2_dot_p[i] = init[1]
     q_1_dot_r = np.zeros(r_len) 
     q_2_dot_r = np.zeros(r_len) 
-    for i in range(r_data):
+    for i in range(p_len):
+        init = p_data[i]
+        init = list(init.cpu().numpy())
+        q_1_dot_p[i] = init[0][0]
+        q_2_dot_p[i] = init[0][1]
         real = r_data[i]
         real = list(real)
-        q_1_dot_r[i] = real[0]
-        q_2_dot_r[i] = real[1]
+        q_1_dot_r[i] = real[0][0]
+        q_2_dot_r[i] = real[0][1]
+        q_1_r[i] = x_test[i][0]
+        q_2_r[i] = x_test[i][1]
+        row_data = [q_1_dot_p[i], q_2_dot_p[i], q_1_dot_r[i], q_2_dot_r[i], q_1_r[i], q_2_r[i]]
+        with open(logfile,  'a') as fd:
+            wr = csv.writer(fd, dialect='excel')
+            wr.writerow(row_data)
+    
     a = 2
     fig, axs = plt.subplots(a,1)   
     time = np.arange(0,p_len,1)
-    axs[0].plot(time, q_1_dot_p, label = 'predicted')
+    axs[0].plot(time, q_1_dot_p, 'r', label = 'predicted')
     axs[0].set_ylabel('q_1_dot')
-    axs[0].plot(time, q_1_dot_r, label = 'real')
+    axs[0].plot(time, q_1_dot_r, 'k', label = 'real')
     axs[0].grid(True)
-    axs[1].plot(time, q_2_dot_p, label = 'predicted')
+    axs[1].plot(time, q_2_dot_p, 'r', label = 'predicted')
     axs[1].set_ylabel('q_2_dot')
-    axs[1].plot(time, q_2_dot_r, label = 'real')
+    axs[1].plot(time, q_2_dot_r, 'k', label = 'real')
     axs[1].grid(True)
     plt.show()
 
 if __name__ == '__main__':
     run_name = experiment_name()
-    train_log = 'train_log_{}.txt'.format(run_name)
-    eval_log = 'eval_log_{}.txt'.format(run_name)
-    n_files = 377
-    n_batch = 10
+    train_log = 'train_log_{}.csv'.format(run_name)
+    eval_log = 'eval_log_{}.csv'.format(run_name)
+    test_log = 'test_log_{}.csv'.format(run_name)
+    n_files = 66
+    n_batch = 1
 
     # Data loading:
     data_dir = '/home/robot/workspaces/planar_robot/data/'
@@ -157,8 +167,6 @@ if __name__ == '__main__':
     x_test = test_data[:,0:2]
     y_test = test_data[:, 15:17]
 
-    data_dir = '/home/robot/workspaces/planar_robot/'
-    os.chdir(data_dir)
     dev = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     model = MyModel(dev).to(dev)
@@ -168,22 +176,31 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     lower_loss = 1
 
-    # for epoch in range(epoches):
-    #     loss1 = train(epoch, dev, model, x_train, y_train, optimizer, log_interval, loss_function, train_log)
-    #     loss2 = evals(model, x_eval, y_eval, dev, loss_function, eval_log)
-    #     if lower_loss>loss2:
-    #         lower_loss = loss2
-    #         print('\nThe lowest loss is: {:4f}\n '.format(lower_loss))
-    #         data_dir = '/home/robot/workspaces/planar_robot/weights'
-    #         os.chdir(data_dir)
-    #         torch.save(model.state_dict(), 'model_{}.pth'.format(run_name))
+    for epoch in range(epoches):
+        data_dir = '/home/robot/workspaces/planar_robot/_LOGS/'
+        os.chdir(data_dir)
+        
+        loss1 = train(epoch, dev, model, x_train, y_train, optimizer, log_interval, loss_function, train_log)
+        print("loss 1", loss1, type(loss1))
+        with open(train_log,'a') as fd:
+            fd.write(str(loss1))
+        
+        loss2 = evals(model, x_eval, y_eval, dev, loss_function, eval_log)
+        with open(eval_log,'a') as fd:
+            fd.write(str(loss2))
+
+        if lower_loss>loss2:
+            lower_loss = loss2
+            print('\nThe lowest loss is: {:4f}\n '.format(lower_loss))
+            data_dir = '/home/robot/workspaces/planar_robot/weights'
+            os.chdir(data_dir)
+            torch.save(model.state_dict(), 'model_{}.pth'.format(run_name))
     
     print("\nA testing part")
-    model.cuda()
-    # model.load_state_dict(torch.load('model_{}.pth'.format(run_name)))  
+    data_dir = '/home/robot/workspaces/planar_robot/weights'
     os.chdir(data_dir)
-    torch.save(model.state_dict(), 'model_{}.pth'.format(run_name))
-    model.load_state_dict(torch.load('model_pytorch_train_20210629_142823.pth')) 
+    model.cuda()
+    model.load_state_dict(torch.load('model_{}.pth'.format(run_name)))  
     predicted_data, real_data = test(model, x_test, y_test)
-    visualize(predicted_data, real_data)
+    visualize(predicted_data, real_data, test_log, x_test, y_test)
 
