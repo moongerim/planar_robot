@@ -13,11 +13,6 @@ import __main__ as main
 import csv
 torch.manual_seed(1)
 
-def experiment_name():
-    experiment = os.path.splitext(os.path.split(main.__file__)[1])[0]
-    name = experiment + '_' + stream_tee.generate_timestamp()
-    return name
-
 class MyModel(nn.Module):
     def __init__(self, dev, input_size = 2, output_size = 2):
         super().__init__()
@@ -27,12 +22,12 @@ class MyModel(nn.Module):
 
     def forward(self, x):
         x = self.linear_1(x)
-        return x
-        #x = torch.tanh(x)
-        #return self.linear_2(x)
+        x = torch.tanh(x)
+        return self.linear_2(x)
 
 def train(epoch, dev, model, x_train, y_train, optimizer, log_interval, loss_function, log_file):
     runLoss = 0
+    record_loss = 0
     model.train()
     for b in range(0, len(x_train), n_batch):
         seq_data = np.array(x_train[b:b+n_batch])
@@ -46,13 +41,12 @@ def train(epoch, dev, model, x_train, y_train, optimizer, log_interval, loss_fun
         single_loss.backward()
         optimizer.step()
         if b % log_interval == 0:
-            print ('Train epoch {} [{}/{}] loss: {:.6f}'.format(epoch, b, len(train_data), single_loss.item()))
-    return runLoss
-
+            record_loss = single_loss.item()
+            print ('Train epoch {} [{}/{}] loss: {:.6f}'.format(epoch, b, len(train_data), record_loss))
+    return record_loss
 
 def evals(model, x_eval, y_eval, dev, loss_function, log_file):
     total_loss = 0
-    correct = 0
     model.eval()
     with torch.no_grad():
         for b in range(0, len(x_eval), n_batch):
@@ -94,13 +88,10 @@ def load_data(n_files):
 
 def split_data(data):
     all_size = len(data)
-    train_size = int(all_size*0.7)
-    eval_size = int(all_size*0.2)
-    test_size = all_size-train_size-eval_size
+    train_size = int(all_size*0.8)
     train_data = data[:train_size]
-    eval_data = data[train_size:train_size+eval_size]
-    test_data = data[train_size+eval_size:]
-    return [train_data, eval_data, test_data]
+    eval_data = data[train_size:]
+    return [train_data, eval_data]
 
 def visualize(predicted_data, real_data, logfile, x_test, y_test):
     data_dir = '/home/robot/workspaces/planar_robot/_LOGS/'
@@ -130,7 +121,6 @@ def visualize(predicted_data, real_data, logfile, x_test, y_test):
         with open(logfile,  'a') as fd:
             wr = csv.writer(fd, dialect='excel')
             wr.writerow(row_data)
-    
     a = 2
     fig, axs = plt.subplots(a,1)   
     time = np.arange(0,p_len,1)
@@ -142,28 +132,30 @@ def visualize(predicted_data, real_data, logfile, x_test, y_test):
     axs[1].set_ylabel('q_2_dot')
     axs[1].plot(time, q_2_dot_r, 'k', label = 'real')
     axs[1].grid(True)
-    plt.show()
+    fig.show()
+    fig.savefig("test_{}.png".format(run_name))
+    # plt.close()
 
 if __name__ == '__main__':
-    run_name = experiment_name()
+    run_name = stream_tee.generate_timestamp()
     train_log = 'train_log_{}.csv'.format(run_name)
     eval_log = 'eval_log_{}.csv'.format(run_name)
     test_log = 'test_log_{}.csv'.format(run_name)
-    n_files = 66
+    n_files = 65
     n_batch = 1
 
     # Data loading:
     data_dir = '/home/robot/workspaces/planar_robot/data/'
     os.chdir(data_dir)
     all_data = load_data(n_files)
-    train_data, eval_data, test_data = split_data(all_data)
-
+    train_data, eval_data = split_data(all_data)
     x_train = train_data[:,0:2]
     y_train = train_data[:, 15:17]
 
     x_eval = eval_data[:,0:2]
     y_eval = eval_data[:, 15:17]
 
+    test_data = np.loadtxt('data_66.csv', skiprows = 1)
     x_test = test_data[:,0:2]
     y_test = test_data[:, 15:17]
 
@@ -181,13 +173,14 @@ if __name__ == '__main__':
         os.chdir(data_dir)
         
         loss1 = train(epoch, dev, model, x_train, y_train, optimizer, log_interval, loss_function, train_log)
-        print("loss 1", loss1, type(loss1))
-        with open(train_log,'a') as fd:
-            fd.write(str(loss1))
+        with open(train_log,  'a') as fd:
+            wr = csv.writer(fd, dialect='excel')
+            wr.writerow([loss1])
         
         loss2 = evals(model, x_eval, y_eval, dev, loss_function, eval_log)
         with open(eval_log,'a') as fd:
-            fd.write(str(loss2))
+            wr = csv.writer(fd, dialect='excel')
+            wr.writerow([loss2])
 
         if lower_loss>loss2:
             lower_loss = loss2

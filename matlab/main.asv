@@ -1,19 +1,80 @@
 clear all;
 clc;
 close all
-cd '/home/robot/workspaces/planar_robot/data'
-loss = load('train_log_pytorch_train_20210630_120200.txt')
-for k=1:67
-    filename = sprintf('data_%i.csv',k);
-    data = load(filename);
+cd '/home/robot/workspaces/planar_robot/_LOGS' 
+%% Loss evalution
+train_loss = load('train_log_20210701_104253.csv')
+eval_loss = load('eval_log_20210701_104253.csv')
+figure_0 = figure('Name', 'losses')
+hold on
+plot(train_loss)
+plot(eval_loss)
+legend('train loss', 'eval loss')
 
-    q = data(:,1:2);
-    init = data(:,3:4);
-    q_dot = data(:,6:7);
-    min_dist = data(:,8:15);
-    solutions = data(:,16:17);
-    max_vel_1(k) = max(solutions(:,1))
-    max_vel_2(k) = max(solutions(:,2))
+%% Test sample
+test = load('test_log_pytorch_train_20210630_161504.csv')
+predicted_q_dot = test(:,1:2)
+real_q_dot = test(:,3:4)
+q = test(:,5:6)
+
+len = length(q)
+dt = 0.1
+figure2 = figure('Name', 'velocities')
+subplot(2,1,1);
+grid on;
+hold on;
+plot(predicted_q_dot(:,1));
+plot(real_q_dot(:,1));
+set(gca,'XTick',0:100:100*len);
+set(gca,'XTickLabel',0:dt*100:len*100*dt);
+title("q 1 dot")
+
+subplot(2,1,2);
+grid on;
+hold on;
+l1 = plot(predicted_q_dot(:,2));
+l2 = plot(real_q_dot(:,2));
+set(gca,'XTick',0:100:100*len);
+set(gca,'XTickLabel',0:dt*100:len*100*dt);
+title("q 2 dot")
+
+% Construct a Legend with the data from the sub-plots
+hL = legend([l1,l2],{"predicted q dot", "real q dot"});
+% Programatically move the Legend
+newPosition = [0.6 0.1 0.1 0.1];
+newUnits = 'normalized';
+set(hL,'Position', newPosition,'Units', newUnits);
+
+figure1 = figure('Name', 'positions');
+subplot(2,1,1);
+grid on;
+hold on;
+plot(q(:,1));
+set(gca,'XTick',0:100:100*len);
+set(gca,'XTickLabel',0:dt*100:len*100*dt);
+
+title("q 1");
+subplot(2,1,2);
+grid on;
+hold on;
+l1 = plot(q(:,2));
+set(gca,'XTick',0:100:100*len);
+set(gca,'XTickLabel',0:dt*100:len*100*dt);
+
+title("q 2")
+
+%% Data preprocessing
+% for k=1:67
+%     filename = sprintf('data_%i.csv',k);
+%     data = load(filename);
+% 
+%     q = data(:,1:2);
+%     init = data(:,3:4);
+%     q_dot = data(:,6:7);
+%     min_dist = data(:,8:15);
+%     solutions = data(:,16:17);
+%     max_vel_1(k) = max(solutions(:,1))
+%     max_vel_2(k) = max(solutions(:,2))
 %     len=length(q_dot);
 %     dt=0.1;
 %     figure1 = figure('Name', 'positions');
@@ -35,7 +96,7 @@ for k=1:67
 %     title("q 2")
 %     figurename = sprintf('jp_%i.png',k);
 %     saveas(figure1, figurename);
-end
+% end
 
 % figure2 = figure('Name', 'velocities')
 % subplot(2,1,1);
