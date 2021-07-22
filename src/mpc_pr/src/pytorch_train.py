@@ -11,6 +11,7 @@ import os
 import stream_tee as stream_tee
 import __main__ as main
 import csv
+from std_msgs.msg import Float64MultiArray
 torch.manual_seed(1)
 
 class MyModel(nn.Module):
@@ -68,6 +69,7 @@ def test(model, x_test, y_test):
     n_batch = 1
     with torch.no_grad():
         for b in range(0, len(x_test), n_batch):
+            print(b)
             seq_data = np.array(x_test[b:b+n_batch])
             seq_label = np.array(y_test[b:b+n_batch])
             real_data.append(seq_label)
@@ -141,11 +143,11 @@ if __name__ == '__main__':
     train_log = 'train_log_{}.csv'.format(run_name)
     eval_log = 'eval_log_{}.csv'.format(run_name)
     test_log = 'test_log_{}.csv'.format(run_name)
-    n_files = 65
+    n_files = 1028
     n_batch = 1
 
     # Data loading:
-    data_dir = '/home/robot/workspaces/planar_robot/data/'
+    data_dir = '/home/robot/workspaces/planar_robot/'
     os.chdir(data_dir)
     all_data = load_data(n_files)
     train_data, eval_data = split_data(all_data)
@@ -155,7 +157,7 @@ if __name__ == '__main__':
     x_eval = eval_data[:,0:2]
     y_eval = eval_data[:, 15:17]
 
-    test_data = np.loadtxt('data_66.csv', skiprows = 1)
+    test_data = np.loadtxt('data_1029.csv', skiprows = 1)
     x_test = test_data[:,0:2]
     y_test = test_data[:, 15:17]
 

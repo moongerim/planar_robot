@@ -64,10 +64,11 @@ set(gca,'XTickLabel',0:dt*100:len*100*dt);
 title("q 2")
 
 %% Data preprocessing
-% for k=1:67
-%     filename = sprintf('data_%i.csv',k);
-%     data = load(filename);
-% 
+for k=1:855
+    filename = sprintf('data_%i.csv',k);
+    data = load(filename);
+    len(k,:) = length(data);
+    init_pose(k,:) = data(2,1:2);
 %     q = data(:,1:2);
 %     init = data(:,3:4);
 %     q_dot = data(:,6:7);
@@ -96,8 +97,12 @@ title("q 2")
 %     title("q 2")
 %     figurename = sprintf('jp_%i.png',k);
 %     saveas(figure1, figurename);
-% end
-
+end
+figure
+hold on;
+plot(init_pose(:,1), init_pose(:,2),'linestyle','none','marker','o')
+[a,b] = max(len)
+[c,d] = min(len)
 % figure2 = figure('Name', 'velocities')
 % subplot(2,1,1);
 % grid on;

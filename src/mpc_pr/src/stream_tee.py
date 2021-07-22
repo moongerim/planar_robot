@@ -1,10 +1,22 @@
 import sys
 import datetime
-
+import scipy.io
+import os
 
 def generate_timestamp():
     return datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-
+def write_mat(dir, data_dict,filename):
+    filename=filename+'.mat'
+    timestamp = datetime.datetime.now()
+    str_time = timestamp.strftime('_%H_%M')
+    name='experiment'+str_time
+    folder_name = dir
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+    filename=os.path.join(folder_name, filename)
+    with open(filename, 'wb') as f:
+        scipy.io.savemat(f, data_dict)
+    print("Printed .mat files in "+folder_name)
 
 class stream_tee(object):
     # Based on https://gist.github.com/327585 by Anand Kunal

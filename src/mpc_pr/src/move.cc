@@ -9,7 +9,7 @@
 using namespace std;
 
 ofstream myfile;
-int rti_num = 10;
+int rti_num = 5;
 
 MPC_solver myMpcSolver(rti_num);
 
@@ -23,7 +23,7 @@ double config_space(double theta_1, double theta_2){
   double l1 = 0.5;
   double l2 = 0.4;
   double R_S = 0.2;
-  double R_quad = (l2/8+R_S)*(l2/8+R_S);
+  double R_quad = (l2/8+R_S)*(l2/8+R_S)-0.1;
   double s1 = sin(theta_1);
   double c1 = cos(theta_1);
   double s12 = sin(theta_1+theta_2);
@@ -50,14 +50,9 @@ double config_space(double theta_1, double theta_2){
   return answer;
 }
 
-
-
-// Introduce class to make safer goal change
 class GoalFollower 
 { 
-    // Access specifier 
-    public: 
-    // Data Members 
+    public:  
     ros::Publisher chatter_pub;
     ros::Publisher ee_pub;
     double goal[2] = {3.14, 0.0};
@@ -65,7 +60,6 @@ class GoalFollower
     double joint_position[2] = {0.0000, 0.0000};
     double joint_speed[2] = {0.0000, 0.0000};
     double dist[10] = {0.0000, 0.0000,0.0000, 0.0000,0.0000, 0.0000,0.0000, 0.0000,0.0000, 0.0000};
-    // double flag = 1.0;
     void change_states_msg(const std_msgs::Float64MultiArray msg) 
     { 
        for (int i=0; i<2; i++) {
@@ -93,17 +87,20 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "pr_controller");
   ros::NodeHandle n;
   ROS_INFO("Node Started");
-  // string filename = "data"
-  myfile.open("data_457.csv", ios::out); 
+  myfile.open("data_1.csv", ios::out); 
   GoalFollower my_follower;
   my_follower.chatter_pub = n.advertise<std_msgs::Float64MultiArray>("/pr/command", 1);
   my_follower.ee_pub = n.advertise<std_msgs::Float64MultiArray>("/reference", 1);
   ros::Subscriber joint_status = n.subscribe("/pr/joint_states", 1, &GoalFollower::change_states_msg, &my_follower);
   ros::Subscriber dist_status = n.subscribe("/CoppeliaSim/distances", 1, &GoalFollower::change_dist_msg, &my_follower);
 
-  double init[2]={1.4,0.0000};
+  std_msgs::Float64MultiArray ee_values;
+  std_msgs::Float64MultiArray joint_vel_values;
+
+  double init[2]={0.0000,0.0000};
   double answer = 0.0;
-  int fileseq=458;
+  double feasibility = 0.0;
+  int fileseq=1;
   ros::Rate loop_rate(20);
   while (ros::ok())
   {
@@ -119,45 +116,75 @@ int main(int argc, char **argv)
     }
     double* solutions;
     string filename;
-    if (max_diff<0.1) {
+    if (max_diff<0.05) {
         printf("Arrived\n");
+        myMpcSolver.reinitialize();
+        fileseq++;
         myfile.close();
         while (answer<1){
-          // init[0] = fRand(-3.14, 3.14);
-          // init[1] = fRand(-1.57,1.57);
-          init[1]=init[1]+0.1;
+          init[0] = fRand(0.0, 3.14);
+          init[1] = fRand(-1.57,1.57);
+          // init[1]=init[1]+0.1;
           answer = config_space(init[0],init[1]);
-          // printf("thetas = %f,%f,ans=%f\n",init[0],init[1],answer);
         }
         solutions[0]=init[0];
         solutions[1]=init[1];
         solutions[2]=0;
-        printf("Init poses=%f,%f\n",init[0],init[1]);
-        std_msgs::Float64MultiArray joint_vel_values;
         joint_vel_values.data.clear();
-        for (int i = 0; i < 3; i++) joint_vel_values.data.push_back(solutions[i]);
-        my_follower.SendVelocity(joint_vel_values);
         double l1 = 0.5;
         double l2 = 0.4;
-        double s1 = sin(init[0]);
-        double c1 = cos(init[1]);
-        double s12 = sin(init[0]+init[1]);
-        double c12 = cos(init[0]+init[1]);
         double ee[3] = {0,0,0};
-        ee[0] = l1*c1+l2*c12;
-        ee[1] = l1*s1+l2*s12;
+        ee[0] = l1*cos(init[0])+l2*cos(init[0]+init[1]);
+        ee[1] = l1*sin(init[0])+l2*sin(init[0]+init[1]);
         ee[2] = 0;
-        std_msgs::Float64MultiArray ee_values;
         ee_values.data.clear();
-        for (int i = 0; i < 3; i++) ee_values.data.push_back(ee[i]);
+        for (int i = 0; i < 3; i++){
+          joint_vel_values.data.push_back(solutions[i]);
+          ee_values.data.push_back(ee[i]);
+        } 
+        my_follower.SendVelocity(joint_vel_values);
         my_follower.SendRef(ee_values);
         filename = "data_"+to_string(fileseq)+".csv";
         myfile.open(filename, ios::out); 
-        fileseq++;
         sleep(5);
     }
+    
     else{
-      for (int i = 0; i < 2; i++){
+      feasibility = config_space(my_follower.joint_position[0],my_follower.joint_position[1]);
+      if (feasibility<1){
+        printf("ERROR\n");
+        myfile.close();
+        myMpcSolver.reinitialize();
+        while (answer<1){
+          init[0] = fRand(0.0, 3.14);
+          init[1] = fRand(-1.57,1.57);
+          // init[1]=init[1]+0.1;
+          answer = config_space(init[0],init[1]);
+        }
+        solutions[0]=init[0];
+        solutions[1]=init[1];
+        solutions[2]=0;
+        joint_vel_values.data.clear();
+        
+        double l1 = 0.5;
+        double l2 = 0.4;
+        double ee[3] = {0,0,0};
+        ee[0] = l1*cos(init[0])+l2*cos(init[0]+init[1]);
+        ee[1] = l1*sin(init[0])+l2*sin(init[0]+init[1]);
+        ee[2] = 0;
+        ee_values.data.clear();
+        for (int i = 0; i < 3; i++){
+          joint_vel_values.data.push_back(solutions[i]);
+          ee_values.data.push_back(ee[i]);
+        } 
+        my_follower.SendVelocity(joint_vel_values);
+        my_follower.SendRef(ee_values);
+        filename = "data_"+to_string(fileseq)+".csv";
+        myfile.open(filename, ios::out); 
+        sleep(5);
+      }
+      else{
+        for (int i = 0; i < 2; i++){
         currentState_targetValue[i] = my_follower.joint_position[i];
         currentState_targetValue[i+2] = my_follower.goal[i];
       }
@@ -166,9 +193,11 @@ int main(int argc, char **argv)
       joint_vel_values.data.clear();
       for (int i = 0; i < 2; i++) joint_vel_values.data.push_back(solutions[i]);
       joint_vel_values.data.push_back(1);
-      printf("Solutions = %f, %f\n", solutions[0], solutions[1]);
       my_follower.SendVelocity(joint_vel_values);
+      printf("Q = %f,%f, Q_dot = %f,%f\n", my_follower.joint_position[0],my_follower.joint_position[1],solutions[0],solutions[1]);
+      } 
     }
+
     if (myfile.is_open())
 	  {
       myfile <<my_follower.joint_position[0]<<" "<<my_follower.joint_position[1]<<" ";

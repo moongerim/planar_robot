@@ -126,6 +126,7 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/robot/workspaces/planar_robot/build/gtest/cmake_install.cmake")
+  include("/home/robot/workspaces/planar_robot/build/catkin_simple/cmake_install.cmake")
   include("/home/robot/workspaces/planar_robot/build/mpc_pr/cmake_install.cmake")
 
 endif()
