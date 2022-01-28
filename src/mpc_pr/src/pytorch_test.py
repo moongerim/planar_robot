@@ -19,17 +19,20 @@ torch.manual_seed(1)
 import random
 from math import sin,cos
 from stream_tee import write_mat
+
+
 class MyModel(nn.Module):
     def __init__(self, dev, input_size = 2, output_size = 2):
         super().__init__()
         self.dev = dev
-        self.linear_1 = nn.Linear(in_features=input_size, out_features=2)
-        self.linear_2 = nn.Linear(2, output_size)
+        self.linear_1 = nn.Linear(in_features=input_size, out_features=100)
+        self.linear_2 = nn.Linear(100, output_size)
 
     def forward(self, x):
         x = self.linear_1(x)
         x = torch.tanh(x)
         return self.linear_2(x)
+
 
 class ENV:
     def __init__(self,model):
@@ -135,7 +138,7 @@ if __name__ == '__main__':
     model.cuda()
     data_dir = '/home/robot/workspaces/planar_robot/weights'
     os.chdir(data_dir)
-    model.load_state_dict(torch.load('model_20210721_184135.pth'))
+    model.load_state_dict(torch.load('model_20210921_131253.pth'))
     env = ENV(model)
     i = 0
     actions = []

@@ -1,2 +1,2 @@
-catkin_simple:mpc_pr
+mpc_pr
 -DCATKIN_DEVEL_PREFIX=/home/robot/workspaces/planar_robot/devel -DCMAKE_INSTALL_PREFIX=/home/robot/workspaces/planar_robot/install -G Unix Makefiles

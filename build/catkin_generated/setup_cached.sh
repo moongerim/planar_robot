@@ -11,5 +11,5 @@ export CMAKE_PREFIX_PATH="/home/robot/workspaces/planar_robot/devel:$CMAKE_PREFI
 export LD_LIBRARY_PATH="/home/robot/workspaces/planar_robot/devel/lib:$LD_LIBRARY_PATH"
 export PKG_CONFIG_PATH="/home/robot/workspaces/planar_robot/devel/lib/pkgconfig:$PKG_CONFIG_PATH"
 export PWD='/home/robot/workspaces/planar_robot/build'
-export ROSLISP_PACKAGE_DIRECTORIES='/home/robot/workspaces/planar_robot/devel/share/common-lisp'
+export ROSLISP_PACKAGE_DIRECTORIES="/home/robot/workspaces/planar_robot/devel/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
 export ROS_PACKAGE_PATH="/home/robot/workspaces/planar_robot/src:$ROS_PACKAGE_PATH"

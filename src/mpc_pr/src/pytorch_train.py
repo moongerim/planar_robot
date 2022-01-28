@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import numpy as np
 import torch
 import torch.nn as nn
@@ -18,8 +19,8 @@ class MyModel(nn.Module):
     def __init__(self, dev, input_size = 2, output_size = 2):
         super().__init__()
         self.dev = dev
-        self.linear_1 = nn.Linear(in_features=input_size, out_features=2)
-        self.linear_2 = nn.Linear(2, output_size)
+        self.linear_1 = nn.Linear(in_features=input_size, out_features=100)
+        self.linear_2 = nn.Linear(100, output_size)
 
     def forward(self, x):
         x = self.linear_1(x)
@@ -143,11 +144,11 @@ if __name__ == '__main__':
     train_log = 'train_log_{}.csv'.format(run_name)
     eval_log = 'eval_log_{}.csv'.format(run_name)
     test_log = 'test_log_{}.csv'.format(run_name)
-    n_files = 1028
-    n_batch = 1
+    n_files = 1967
+    n_batch = 500
 
     # Data loading:
-    data_dir = '/home/robot/workspaces/planar_robot/'
+    data_dir = '/home/robot/workspaces/planar_robot/data_2306/'
     os.chdir(data_dir)
     all_data = load_data(n_files)
     train_data, eval_data = split_data(all_data)
@@ -157,7 +158,7 @@ if __name__ == '__main__':
     x_eval = eval_data[:,0:2]
     y_eval = eval_data[:, 15:17]
 
-    test_data = np.loadtxt('data_1029.csv', skiprows = 1)
+    test_data = np.loadtxt('data_1968.csv', skiprows = 1)
     x_test = test_data[:,0:2]
     y_test = test_data[:, 15:17]
 

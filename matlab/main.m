@@ -3,8 +3,8 @@ clc;
 close all
 cd '/home/robot/workspaces/planar_robot/_LOGS' 
 %% Loss evalution
-train_loss = load('train_log_20210701_105701.csv')
-eval_loss = load('eval_log_20210701_105701.csv')
+train_loss = load('train_log_20210723_101441.csv')
+eval_loss = load('eval_log_20210723_101441.csv')
 figure_0 = figure('Name', 'losses')
 hold on
 plot(train_loss)
@@ -64,38 +64,52 @@ set(gca,'XTickLabel',0:dt*100:len*100*dt);
 title("q 2")
 
 %% Data preprocessing
-for k=1:855
+clear all
+close all
+clc
+for k=1:1968
     filename = sprintf('data_%i.csv',k);
     data = load(filename);
     len(k,:) = length(data);
     init_pose(k,:) = data(2,1:2);
-%     q = data(:,1:2);
+    goal_pose(k,:) = data(length(data),1:2);
+    q = data(:,1:2);
 %     init = data(:,3:4);
 %     q_dot = data(:,6:7);
-%     min_dist = data(:,8:15);
-%     solutions = data(:,16:17);
-%     max_vel_1(k) = max(solutions(:,1))
-%     max_vel_2(k) = max(solutions(:,2))
+    min_dist = data(:,8:15);
+    min_list(k,1) = min(min_dist(:,1));
+    min_list(k,2) = min(min_dist(:,2));
+    min_list(k,3) = min(min_dist(:,3));
+    min_list(k,4) = min(min_dist(:,4));
+    min_list(k,5) = min(min_dist(:,5));
+    min_list(k,6) = min(min_dist(:,6));
+    min_list(k,7) = min(min_dist(:,7));
+    min_list(k,8) = min(min_dist(:,8));
+    solutions = data(2:length(data),16:17);
+    max_vel_1(k) = max(solutions(:,1));
+    max_vel_2(k) = max(solutions(:,2));
+    min_vel_1(k) = min(solutions(:,1));
+    min_vel_2(k) = min(solutions(:,2));
 %     len=length(q_dot);
 %     dt=0.1;
-%     figure1 = figure('Name', 'positions');
+%     figure1 = figure('Name', 'velo');
 %     subplot(2,1,1);
 %     grid on;
 %     hold on;
-%     plot(q(:,1));
+%     plot(solutions(:,1));
 %     set(gca,'XTick',0:100:100*len);
 %     set(gca,'XTickLabel',0:dt*100:len*100*dt);
 % 
-%     title("q 1");
+%     title("q dot 1");
 %     subplot(2,1,2);
 %     grid on;
 %     hold on;
-%     l1 = plot(q(:,2));
+%     l1 = plot(solutions(:,2));
 %     set(gca,'XTick',0:100:100*len);
 %     set(gca,'XTickLabel',0:dt*100:len*100*dt);
 % 
-%     title("q 2")
-%     figurename = sprintf('jp_%i.png',k);
+%     title("q dot 2")
+%     figurename = sprintf('jv_%i.png',k);
 %     saveas(figure1, figurename);
 end
 figure
@@ -103,33 +117,54 @@ hold on;
 plot(init_pose(:,1), init_pose(:,2),'linestyle','none','marker','o')
 [a,b] = max(len)
 [c,d] = min(len)
-% figure2 = figure('Name', 'velocities')
-% subplot(2,1,1);
-% grid on;
-% hold on;
-% plot(q_dot(:,1));
-% plot(solutions(:,1));
-% set(gca,'XTick',0:100:100*len);
-% set(gca,'XTickLabel',0:dt*100:len*100*dt);
-% 
-% title("q 1 dot")
-% subplot(2,1,2);
-% grid on;
-% hold on;
-% l1 = plot(q_dot(:,2));
-% l2 = plot(solutions(:,2));
-% set(gca,'XTick',0:100:100*len);
-% set(gca,'XTickLabel',0:dt*100:len*100*dt);
-% 
-% title("q 2 dot")
-% % Construct a Legend with the data from the sub-plots
-% hL = legend([l1,l2],{"q dot", "solutions"});
-% % Programatically move the Legend
-% newPosition = [0.6 0.1 0.1 0.1];
-% newUnits = 'normalized';
-% set(hL,'Position', newPosition,'Units', newUnits);
-% saveas(figure2, 'joint_vels.png');
 
+figure
+hold on;
+plot(goal_pose(:,1), goal_pose(:,2),'linestyle','none','marker','*')
+iter = 1;
+for i=1:1968
+    if max_vel_1(i)>2.1 || max_vel_2(i)>2 || min_vel_1(i)<-2 || min_vel_2(i)<-2.1
+        LIST_er(iter)= i
+        iter=iter+1;
+    end
+end
+
+for i=1:40
+    k = LIST_er(i)
+    filename = sprintf('data_%i.csv',k);
+    data = load(filename);
+    len = length(data);
+    solutions = data(2:len,16:17);
+    q_dot = data(2:len,6:7);
+    dt=0.1;
+    figure2 = figure('Name', 'velocities')
+    subplot(2,1,1);
+    grid on;
+    hold on;
+    plot(q_dot(:,1));
+    plot(solutions(:,1));
+    set(gca,'XTick',0:100:100*len);
+    set(gca,'XTickLabel',0:dt*100:len*100*dt);
+
+    title("q 1 dot")
+    subplot(2,1,2);
+    grid on;
+    hold on;
+    l1 = plot(q_dot(:,2));
+    l2 = plot(solutions(:,2));
+    set(gca,'XTick',0:100:100*len);
+    set(gca,'XTickLabel',0:dt*100:len*100*dt);
+
+    title("q 2 dot")
+    % Construct a Legend with the data from the sub-plots
+    hL = legend([l1,l2],{"q dot", "solutions"});
+    % Programatically move the Legend
+    newPosition = [0.6 0.1 0.1 0.1];
+    newUnits = 'normalized';
+    set(hL,'Position', newPosition,'Units', newUnits);
+    filename = sprintf('jv_%i.png',k);
+    saveas(figure2, filename);
+end
 % figure3 = figure('Name', 'minimum distances')
 % subplot(4,2,1);
 % grid on;

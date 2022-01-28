@@ -23,7 +23,7 @@ double config_space(double theta_1, double theta_2){
   double l1 = 0.5;
   double l2 = 0.4;
   double R_S = 0.2;
-  double R_quad = (l2/8+R_S)*(l2/8+R_S)-0.1;
+  double R_quad = (l2/8+R_S)*(l2/8+R_S);
   double s1 = sin(theta_1);
   double c1 = cos(theta_1);
   double s12 = sin(theta_1+theta_2);
@@ -116,14 +116,14 @@ int main(int argc, char **argv)
     }
     double* solutions;
     string filename;
-    if (max_diff<0.05) {
+    if (max_diff<0.01) {
         printf("Arrived\n");
         myMpcSolver.reinitialize();
         fileseq++;
         myfile.close();
         while (answer<1){
-          init[0] = fRand(0.0, 3.14);
-          init[1] = fRand(-1.57,1.57);
+          init[0] = fRand(0.0, 3);
+          init[1] = fRand(-1.57, 1.57);
           // init[1]=init[1]+0.1;
           answer = config_space(init[0],init[1]);
         }
